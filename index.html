@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>حصر المراتب الهوائية والوقاية من قرح الفراش</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1f4e79; --navy-2:#163a5c; --navy-soft:#e8eef6;
+    --teal:#0b6e4f; --teal-soft:#e7f4ee;
+    --bg:#f3f6fa; --card:#fff; --line:#dfe6ee; --ink:#1e293b; --muted:#64748b;
+    --red:#b42318; --red-soft:#fef3f2; --amber:#b54708; --amber-soft:#fffaeb;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:'Cairo',system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--ink);font-size:15px;line-height:1.6}
+  header{background:linear-gradient(135deg,var(--navy),var(--navy-2));color:#fff;padding:22px 16px 26px}
+  header .in{max-width:860px;margin:0 auto}
+  header small{opacity:.85;font-size:13px}
+  header h1{margin:4px 0 6px;font-size:22px;font-weight:800}
+  header p{margin:0;opacity:.9;font-size:13.5px}
+  .wrap{max-width:860px;margin:-14px auto 0;padding:0 14px 120px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:18px;margin-bottom:16px;box-shadow:0 1px 3px rgba(16,24,40,.05)}
+  .card h2{font-size:17px;margin:0 0 2px;color:var(--navy);display:flex;gap:10px;align-items:center}
+  .step{background:var(--navy);color:#fff;border-radius:50%;width:26px;height:26px;display:inline-grid;place-items:center;font-size:13px;flex:none}
+  .hint{color:var(--muted);font-size:13px;margin:0 0 14px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+  .span-all{grid-column:1/-1}
+  .fld{display:flex;flex-direction:column;gap:5px;font-size:13.5px;font-weight:600}
+  .fld .sub{font-weight:400;color:var(--muted);font-size:12px}
+  input,select,textarea{font:inherit;font-weight:400;padding:10px 12px;border:1px solid #cbd5e1;border-radius:10px;background:#fff;color:var(--ink);width:100%}
+  textarea{min-height:76px;resize:vertical}
+  input:focus,select:focus,textarea:focus{outline:none;border-color:var(--navy);box-shadow:0 0 0 3px rgba(31,78,121,.15)}
+  .req::after{content:" *";color:var(--red)}
+  .invalid{border-color:var(--red)!important;background:var(--red-soft)!important}
+  .err-msg{color:var(--red);font-size:12.5px;font-weight:700;margin-top:6px}
+  .err-msg:empty{display:none}
+
+  .unit{border:1px solid var(--line);border-inline-start:4px solid var(--navy);border-radius:12px;padding:14px;margin-bottom:12px;background:#fbfcfe;animation:pop .18s ease}
+  @keyframes pop{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+  .unit.has-err{border-inline-start-color:var(--red)}
+  .unit-head{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+  .badge{background:var(--navy-soft);color:var(--navy);border-radius:999px;padding:2px 12px;font-size:13px;font-weight:700;white-space:nowrap}
+  .unit-title{font-weight:700;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .del{margin-inline-start:auto;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:8px;padding:4px 10px;cursor:pointer;font:inherit;font-size:13px}
+  .del:hover{color:var(--red);border-color:#fecdca;background:var(--red-soft)}
+  .calc{display:flex;flex-wrap:wrap;gap:8px;margin:12px 0}
+  .chip{background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px 12px;font-size:13px;color:var(--muted)}
+  .chip b{color:var(--navy);font-size:14px}
+  .chip.total{background:var(--teal);border-color:var(--teal);color:#fff}
+  .chip.total b{color:#fff}
+  .chip.bad{background:var(--red-soft);border-color:#fecdca;color:var(--red);font-weight:700}
+  .row{display:flex;flex-wrap:wrap;align-items:center;gap:10px 14px;margin-bottom:10px;font-size:13.5px;font-weight:600}
+  .yn{display:flex;gap:8px}
+  .yn label{display:flex;align-items:center;gap:6px;border:1px solid #cbd5e1;border-radius:999px;padding:5px 16px;cursor:pointer;font-weight:600;background:#fff}
+  .yn input{width:auto;margin:0}
+  .yn label:has(input:checked){border-color:var(--navy);background:var(--navy-soft);color:var(--navy)}
+  .yn.invalid label{border-color:var(--red)}
+  .add{width:100%;border:2px dashed #9fb3c8;background:#fff;color:var(--navy);padding:12px;border-radius:12px;font:inherit;font-weight:700;font-size:15px;cursor:pointer}
+  .add:hover{background:var(--navy-soft);border-color:var(--navy)}
+  .checks label{display:flex;gap:10px;align-items:center;padding:10px 12px;border:1px solid var(--line);border-radius:10px;margin-bottom:8px;cursor:pointer;background:#fff}
+  .checks label:has(input:checked){border-color:var(--navy);background:var(--navy-soft)}
+  .checks input[type=checkbox]{width:18px;height:18px;margin:0;flex:none;accent-color:var(--navy)}
+  .checks.invalid label{border-color:#fecdca}
+  .banner{border-radius:12px;padding:12px 14px;margin:14px 0 0;font-size:13.5px;display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between}
+  .banner.amber{background:var(--amber-soft);border:1px solid #fedf89;color:var(--amber)}
+  .banner.blue{background:var(--navy-soft);border:1px solid #c7d7ea;color:var(--navy)}
+  .banner .acts{display:flex;gap:8px}
+  .btn{font:inherit;font-weight:700;border-radius:10px;padding:10px 18px;border:1px solid transparent;cursor:pointer}
+  .btn.sm{padding:5px 12px;font-size:13px}
+  .btn.primary{background:var(--navy);color:#fff}
+  .btn.primary:hover{background:var(--navy-2)}
+  .btn.ghost{background:#fff;border-color:#cbd5e1;color:var(--ink)}
+  .btn[disabled]{opacity:.6;cursor:wait}
+  .bar{position:fixed;bottom:0;inset-inline:0;background:rgba(255,255,255,.97);border-top:1px solid var(--line);box-shadow:0 -6px 18px rgba(16,24,40,.07);z-index:5}
+  .bar .in{max-width:860px;margin:0 auto;padding:10px 14px;display:flex;gap:10px;align-items:center}
+  .bar .stats{display:flex;gap:14px;flex-wrap:wrap;font-size:13px;color:var(--muted)}
+  .bar .stats b{color:var(--ink);font-size:15px}
+  .bar .btn{margin-inline-start:auto;min-width:150px}
+  .hidden{display:none!important}
+  #toast{position:fixed;bottom:84px;left:50%;transform:translateX(-50%);background:#1e293b;color:#fff;padding:10px 18px;border-radius:10px;font-size:14px;opacity:0;pointer-events:none;transition:opacity .2s;z-index:9;max-width:92vw;text-align:center}
+  #toast.show{opacity:1}
+  #toast.err{background:var(--red)}
+  .done{text-align:center;padding:26px 18px}
+  .done .ok{width:60px;height:60px;border-radius:50%;background:var(--teal-soft);color:var(--teal);display:grid;place-items:center;font-size:30px;margin:0 auto 10px}
+  .tbl{width:100%;border-collapse:collapse;font-size:13px;margin:16px 0;text-align:center}
+  .tbl th{background:var(--navy);color:#fff;padding:8px 6px;font-weight:700}
+  .tbl td{border-bottom:1px solid var(--line);padding:7px 6px}
+  .tbl td:first-child{text-align:start}
+  .tbl tfoot td{font-weight:800;background:var(--navy-soft)}
+  .tbl-wrap{overflow-x:auto}
+  .loader{position:fixed;inset:0;background:var(--bg);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;z-index:20;color:var(--muted)}
+  .spin{width:38px;height:38px;border:4px solid var(--navy-soft);border-top-color:var(--navy);border-radius:50%;animation:sp 0.8s linear infinite}
+  @keyframes sp{to{transform:rotate(360deg)}}
+  .preview-tag{background:#fff3;border:1px solid #fff6;border-radius:999px;padding:1px 10px;font-size:12px;margin-inline-start:6px}
+</style>
+</head>
+<body>
+<div id="loader" class="loader"><div class="spin"></div><p id="loaderText">جاري التحميل…</p><button type="button" class="btn primary hidden" id="retry">إعادة المحاولة</button></div>
+
+<header>
+  <div class="in">
+    <small id="org"></small>
+    <h1 id="title"></h1>
+    <p>املا بيانات المستشفى مرة واحدة، وبعدين اضغط <b>«إضافة قسم»</b> لكل قسم داخلي.</p>
+  </div>
+</header>
+
+<div class="wrap">
+  <form id="form" novalidate>
+    <!-- 1 — المستشفى -->
+    <section class="card">
+      <h2><span class="step">1</span> بيانات المستشفى</h2>
+      <p class="hint">بتتملي مرة واحدة بس.</p>
+      <div class="grid">
+        <label class="fld span-all"><span class="req">المنشأة</span>
+          <select id="facility"><option value="">— اختر المستشفى —</option></select>
+        </label>
+        <label class="fld"><span class="req">تاريخ الحصر</span>
+          <input id="date" type="date">
+        </label>
+        <label class="fld"><span class="req">اسم القائم بالإدخال</span>
+          <input id="reporter" autocomplete="name">
+        </label>
+        <label class="fld"><span>رقم الموبايل <span class="sub">(اختياري)</span></span>
+          <input id="phone" inputmode="tel" maxlength="11" placeholder="01xxxxxxxxx">
+        </label>
+        <label class="fld"><span class="req">عدد أخصائيي التغذية العلاجية في المستشفى</span>
+          <input id="dietitians" class="num" inputmode="numeric" placeholder="0">
+        </label>
+      </div>
+      <div id="existing" class="banner amber hidden">
+        <span id="existingText"></span>
+        <span class="acts"><button type="button" class="btn sm primary" id="loadExisting">تحميل البيانات للتعديل</button></span>
+      </div>
+      <div id="draft" class="banner blue hidden">
+        <span>فيه بيانات متسجلة على الجهاز ده ولسه ما اتبعتتش.</span>
+        <span class="acts">
+          <button type="button" class="btn sm primary" id="restoreDraft">استرجاعها</button>
+          <button type="button" class="btn sm ghost" id="discardDraft">تجاهل</button>
+        </span>
+      </div>
+    </section>
+
+    <!-- 2 — الأقسام -->
+    <section class="card">
+      <h2><span class="step">2</span> الأقسام والمراتب الهوائية</h2>
+      <p class="hint">كارت لكل قسم. الحسابات بتطلع لوحدها تحت كل قسم.</p>
+      <div id="units"></div>
+      <div id="unitsErr" class="err-msg"></div>
+      <button type="button" class="add" id="addUnit">＋ إضافة قسم</button>
+    </section>
+
+    <!-- 3 — المعوقات -->
+    <section class="card">
+      <h2><span class="step">3</span> معوقات الوقاية من قرح الفراش</h2>
+      <p class="hint">على مستوى المستشفى — اختار كل اللي ينطبق.</p>
+      <div class="checks" id="barriers"></div>
+      <input id="barrierOther" class="hidden" placeholder="اكتب المعوق الآخر">
+      <div id="barriersErr" class="err-msg"></div>
+      <div class="grid" style="margin-top:12px">
+        <label class="fld span-all">تفاصيل المعوقات <span class="sub">الملايات ونوعها، المخدات، الأسرّة المناسبة، أو أي معوق يخص إجراءات الحماية من قرح الفراش</span>
+          <textarea id="barrierDetails"></textarea>
+        </label>
+        <label class="fld span-all">ملاحظات عامة <span class="sub">(اختياري)</span>
+          <textarea id="notes"></textarea>
+        </label>
+      </div>
+    </section>
+  </form>
+
+  <section id="done" class="card done hidden">
+    <div class="ok">✓</div>
+    <h2 style="justify-content:center" id="doneTitle"></h2>
+    <p class="hint" id="doneSub"></p>
+    <div class="tbl-wrap"><table class="tbl" id="doneTable"></table></div>
+    <button type="button" class="btn primary" id="again">إدخال مستشفى أخرى</button>
+  </section>
+</div>
+
+<div class="bar" id="bar">
+  <div class="in">
+    <div class="stats">
+      <span>الأقسام: <b id="sUnits">0</b></span>
+      <span>المطلوب استبداله: <b id="sReplace">0</b></span>
+      <span>المطلوب توفيره: <b id="sAdd">0</b></span>
+      <span>الإجمالي: <b id="sTotal">0</b></span>
+    </div>
+    <button type="submit" form="form" class="btn primary" id="submitBtn">إرسال البيانات</button>
+  </div>
+</div>
+<div id="toast"></div>
+
+<script>
+/* ---------- إعدادات المعاينة فقط (النسخة الحقيقية في Code.gs) ---------- */
+const PREVIEW_CONFIG = {
+  title: 'حصر المراتب الهوائية والوقاية من قرح الفراش',
+  org: 'الهيئة العامة للرعاية الصحية — فرع الإسماعيلية',
+  facilities: ['مجمع الإسماعيلية الطبي','مستشفى 30 يونيو لأمراض الكلى والمسالك','مستشفى أبوخليفة للجراحات الدقيقة والطوارئ','مستشفى فايد التخصصي','مستشفى القصاصين التخصصي','مستشفى التل الكبير','مستشفى القنطرة غرب','مستشفى القنطرة شرق'],
+  units: ['الرعاية المركزة (ICU)','الرعاية المتوسطة','رعاية القلب (CCU)','رعاية حديثي الولادة (NICU)','رعاية الأطفال (PICU)','الباطنة','الجراحة العامة','العظام','المخ والأعصاب','جراحة المخ والأعصاب','النساء والتوليد','الأطفال','المسالك البولية','الكلى','الحروق','الطوارئ والاستقبال'],
+  barriers: ['عدم توافر ملايات بعدد كافٍ','نوع الملايات غير مناسب','عدم توافر مخدات / وسائد كافية لتغيير وضع المريض','عدم توافر أسرّة مناسبة','لا توجد معوقات'],
+  noBarriers: 'لا توجد معوقات'
+};
+
+/* ---------- رابط الـ API (Apps Script /exec) ---------- */
+const API_URL = 'https://script.google.com/macros/s/AKfycbxxEIpRZy4EYeBL9IH8FeeG9S5MQeAfBF-Anc4BTRsrBxgNxg7CMxZFwayF-Cf1_o-N/exec';
+const CFG_CACHE_KEY = 'eha-airmat-config-v1';
+
+// وضع المعاينة: لو الصفحة مفتوحة كملف، أو الرابط فيه ?preview — مفيش اتصال بالشيت
+const PREVIEW = !API_URL || location.protocol === 'file:' || new URLSearchParams(location.search).has('preview');
+const HAS_SERVER = !PREVIEW;
+let CFG = null;
+
+// طلبات بسيطة من غير كوكيز — عشان كده مشكلة تعدد حسابات جوجل مش بتحصل
+async function apiGet(params){
+  const url = API_URL + '?' + new URLSearchParams(params).toString();
+  const r = await fetch(url, { method: 'GET', credentials: 'omit', redirect: 'follow' });
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error || 'خطأ غير معروف');
+  return j.data;
+}
+async function apiPost(body){
+  const r = await fetch(API_URL, {
+    method: 'POST', credentials: 'omit', redirect: 'follow',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(body)
+  });
+  const j = await r.json();
+  if (!j.ok) throw new Error(j.error || 'خطأ غير معروف');
+  return j.data;
+}
+
+async function boot(){
+  if (PREVIEW) { CFG = PREVIEW_CONFIG; return start(); }
+  let cached = null;
+  try { cached = JSON.parse(localStorage.getItem(CFG_CACHE_KEY) || 'null'); } catch (e) {}
+  if (cached) {
+    CFG = cached; start();
+    apiGet({ action: 'config' }).then(c => { try { localStorage.setItem(CFG_CACHE_KEY, JSON.stringify(c)); } catch (e) {} }).catch(() => {});
+    return;
+  }
+  try {
+    CFG = await apiGet({ action: 'config' });
+    try { localStorage.setItem(CFG_CACHE_KEY, JSON.stringify(CFG)); } catch (e) {}
+    start();
+  } catch (e) {
+    $('#loaderText').textContent = 'تعذّر الاتصال — اتأكد من النت وجرّب تاني';
+    $('#retry').classList.remove('hidden');
+  }
+}
+function start(){ $('#loader').classList.add('hidden'); init(); }
+const OTHER = '__other__';
+const OTHER_PREFIX = 'أخرى: ';
+const DRAFT_KEY = 'eha-airmat-draft-v1';
+let seq = 0, existingData = null, saveTimer = null;
+
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+/* ---------- أرقام: يقبل الأرقام العربي ويحوّلها ---------- */
+function toAscii(s){ return String(s).replace(/[٠-٩]/g, d => d.charCodeAt(0) - 0x660).replace(/[۰-۹]/g, d => d.charCodeAt(0) - 0x6F0); }
+function cleanNum(el){ const v = toAscii(el.value).replace(/[^0-9]/g, '').slice(0, 5); if (v !== el.value) el.value = v; }
+function numVal(el){ return el.value === '' ? null : parseInt(el.value, 10); }
+
+function calc(req, act, brk){
+  if (req == null || act == null || brk == null) return null;
+  if (brk > act) return { bad: true };
+  const usable = act - brk;
+  const gap = Math.max(req - usable, 0);
+  const replace = Math.min(brk, gap);
+  const add = Math.max(req - act, 0);
+  return { usable, replace, add, total: replace + add };
+}
+
+/* ---------- تهيئة ---------- */
+function init(){
+  document.title = CFG.title;
+  $('#title').textContent = CFG.title;
+  $('#org').innerHTML = esc(CFG.org) + (HAS_SERVER ? '' : '<span class="preview-tag">وضع المعاينة — مفيش حفظ</span>');
+  $('#facility').insertAdjacentHTML('beforeend', CFG.facilities.map(f => `<option>${esc(f)}</option>`).join(''));
+  $('#barriers').innerHTML = CFG.barriers.map(b =>
+    `<label><input type="checkbox" name="barrier" value="${esc(b)}"><span>${esc(b)}</span></label>`).join('') +
+    `<label><input type="checkbox" id="barrierOtherChk"><span>أخرى</span></label>`;
+  setToday();
+  addUnit();
+
+  $('#addUnit').addEventListener('click', () => { const u = addUnit(); $('.u-name', u).focus(); });
+  $('#form').addEventListener('submit', onSubmit);
+  $('#form').addEventListener('input', e => {
+    if (e.target.classList.contains('num')) cleanNum(e.target);
+    if (e.target.id === 'phone') e.target.value = toAscii(e.target.value).replace(/[^0-9]/g, '');
+    e.target.classList.remove('invalid');
+    queueDraft();
+  });
+  $('#form').addEventListener('change', queueDraft);
+  $('#barriers').addEventListener('change', onBarrierChange);
+  $('#facility').addEventListener('change', checkExisting);
+  $('#loadExisting').addEventListener('click', () => { if (existingData) { fill(existingData); $('#existing').classList.add('hidden'); toast('تم تحميل البيانات — عدّل واضغط إرسال'); } });
+  $('#again').addEventListener('click', resetAll);
+  $('#restoreDraft').addEventListener('click', () => { const d = readDraft(); if (d) fill(d); $('#draft').classList.add('hidden'); });
+  $('#discardDraft').addEventListener('click', () => { clearDraft(); $('#draft').classList.add('hidden'); });
+
+  const d = readDraft();
+  if (d && (d.facility || (d.units || []).some(u => u.name))) $('#draft').classList.remove('hidden');
+}
+
+function setToday(){
+  const d = new Date();
+  $('#date').value = new Date(d.getTime() - d.getTimezoneOffset() * 60000).toISOString().slice(0, 10);
+}
+
+/* ---------- كروت الأقسام ---------- */
+function addUnit(data){
+  data = data || {};
+  const uid = ++seq;
+  const known = CFG.units.indexOf(data.name) >= 0;
+  const sel = data.name ? (known ? data.name : OTHER) : '';
+  const div = document.createElement('div');
+  div.className = 'unit';
+  div.innerHTML = `
+    <div class="unit-head">
+      <span class="badge">قسم <span class="idx"></span></span>
+      <span class="unit-title"></span>
+      <button type="button" class="del" title="حذف القسم">حذف ✕</button>
+    </div>
+    <div class="grid">
+      <label class="fld span-all"><span class="req">القسم / الوحدة</span>
+        <select class="u-name"><option value="">— اختر القسم —</option>
+          ${CFG.units.map(u => `<option>${esc(u)}</option>`).join('')}
+          <option value="${OTHER}">قسم آخر (اكتب الاسم)</option>
+        </select>
+      </label>
+      <label class="fld span-all u-other-wrap hidden"><span class="req">اسم القسم</span>
+        <input class="u-other" placeholder="اكتب اسم القسم">
+      </label>
+      <label class="fld"><span class="req">المفروض توفرها</span><input class="num u-req" inputmode="numeric" placeholder="0"></label>
+      <label class="fld"><span class="req">الفعلية <span class="sub">(شامل المعطّل)</span></span><input class="num u-act" inputmode="numeric" placeholder="0"></label>
+      <label class="fld"><span class="req">المعطّلة / التالفة</span><input class="num u-brk" inputmode="numeric" placeholder="0"></label>
+    </div>
+    <div class="calc"></div>
+    <div class="row"><span class="req">الكريمات المرطبة والعازلة للجلد متوفرة؟</span>
+      <span class="yn">
+        <label><input type="radio" name="creams-${uid}" value="نعم"> نعم</label>
+        <label><input type="radio" name="creams-${uid}" value="لا"> لا</label>
+      </span>
+    </div>
+    <label class="fld">ملاحظات القسم <span class="sub">(اختياري)</span><input class="u-notes"></label>
+    <div class="err-msg u-err"></div>`;
+  $('#units').appendChild(div);
+
+  $('.u-name', div).value = sel;
+  if (sel === OTHER) $('.u-other', div).value = data.name;
+  if (data.required != null) $('.u-req', div).value = data.required;
+  if (data.actual != null) $('.u-act', div).value = data.actual;
+  if (data.broken != null) $('.u-brk', div).value = data.broken;
+  if (data.creams) { const r = $(`input[type=radio][value="${data.creams}"]`, div); if (r) r.checked = true; }
+  $('.u-notes', div).value = data.notes || '';
+
+  $('.u-name', div).addEventListener('change', () => { toggleOther(div); refreshUnit(div); });
+  $('.u-other', div).addEventListener('input', () => refreshUnit(div));
+  $$('.num', div).forEach(el => el.addEventListener('input', () => { refreshUnit(div); refreshTotals(); }));
+  $$('input[type=radio]', div).forEach(el => el.addEventListener('change', () => $('.yn', div).classList.remove('invalid')));
+  $('.del', div).addEventListener('click', () => removeUnit(div));
+
+  toggleOther(div); refreshUnit(div); renumber(); refreshTotals();
+  $('#unitsErr').textContent = '';
+  return div;
+}
+
+function removeUnit(div){
+  const filled = unitName(div) || $$('.num', div).some(i => i.value !== '');
+  if (filled && !confirm('حذف «' + (unitName(div) || 'القسم') + '»؟')) return;
+  div.remove(); renumber(); refreshTotals(); queueDraft();
+}
+function toggleOther(div){ $('.u-other-wrap', div).classList.toggle('hidden', $('.u-name', div).value !== OTHER); }
+function unitName(div){ const v = $('.u-name', div).value; return v === OTHER ? $('.u-other', div).value.trim() : v; }
+function renumber(){ $$('.unit').forEach((u, i) => $('.idx', u).textContent = i + 1); }
+
+function refreshUnit(div){
+  $('.unit-title', div).textContent = unitName(div);
+  const c = calc(numVal($('.u-req', div)), numVal($('.u-act', div)), numVal($('.u-brk', div)));
+  const box = $('.calc', div);
+  if (!c) { box.innerHTML = '<span class="chip">الحسابات هتظهر بعد إدخال الأعداد الثلاثة</span>'; return; }
+  if (c.bad) { box.innerHTML = '<span class="chip bad">⚠ عدد المعطّل أكبر من العدد الفعلي — راجع الأرقام</span>'; return; }
+  box.innerHTML =
+    `<span class="chip">الصالحة: <b>${c.usable}</b></span>` +
+    `<span class="chip">تحتاج استبدال: <b>${c.replace}</b></span>` +
+    `<span class="chip">توفير إضافي: <b>${c.add}</b></span>` +
+    `<span class="chip total">إجمالي المطلوب: <b>${c.total}</b></span>`;
+}
+
+function refreshTotals(){
+  let r = 0, a = 0, t = 0;
+  $$('.unit').forEach(div => {
+    const c = calc(numVal($('.u-req', div)), numVal($('.u-act', div)), numVal($('.u-brk', div)));
+    if (c && !c.bad) { r += c.replace; a += c.add; t += c.total; }
+  });
+  $('#sUnits').textContent = $$('.unit').length;
+  $('#sReplace').textContent = r; $('#sAdd').textContent = a; $('#sTotal').textContent = t;
+}
+
+/* ---------- المعوقات ---------- */
+function onBarrierChange(e){
+  const t = e.target;
+  if (t.value === CFG.noBarriers && t.checked) {
+    $$('input[name=barrier]').forEach(x => { if (x !== t) x.checked = false; });
+    $('#barrierOtherChk').checked = false;
+  } else if (t.checked) {
+    const none = $$('input[name=barrier]').find(x => x.value === CFG.noBarriers);
+    if (none) none.checked = false;
+  }
+  $('#barrierOther').classList.toggle('hidden', !$('#barrierOtherChk').checked);
+  $('#barriers').classList.remove('invalid'); $('#barriersErr').textContent = '';
+}
+
+/* ---------- جمع / تعبئة ---------- */
+function collect(){
+  const barriers = $$('input[name=barrier]:checked').map(x => x.value);
+  const other = $('#barrierOther').value.trim();
+  if ($('#barrierOtherChk').checked && other) barriers.push(OTHER_PREFIX + other);
+  return {
+    facility: $('#facility').value,
+    date: $('#date').value,
+    reporter: $('#reporter').value.trim(),
+    phone: $('#phone').value.trim(),
+    dietitians: numVal($('#dietitians')),
+    units: $$('.unit').map(div => ({
+      name: unitName(div),
+      required: numVal($('.u-req', div)),
+      actual: numVal($('.u-act', div)),
+      broken: numVal($('.u-brk', div)),
+      creams: (($('input[type=radio]:checked', div)) || {}).value || '',
+      notes: $('.u-notes', div).value.trim()
+    })),
+    barriers,
+    barrierDetails: $('#barrierDetails').value.trim(),
+    notes: $('#notes').value.trim()
+  };
+}
+
+function fill(d){
+  $('#facility').value = d.facility || '';
+  if (d.date) $('#date').value = d.date;
+  $('#reporter').value = d.reporter || $('#reporter').value;
+  $('#phone').value = d.phone || '';
+  $('#dietitians').value = d.dietitians == null ? '' : d.dietitians;
+  $('#units').innerHTML = '';
+  (d.units && d.units.length ? d.units : [{}]).forEach(u => addUnit(u));
+  $$('input[name=barrier]').forEach(x => x.checked = (d.barriers || []).indexOf(x.value) >= 0);
+  const other = (d.barriers || []).find(b => b.indexOf(OTHER_PREFIX) === 0);
+  $('#barrierOtherChk').checked = !!other;
+  $('#barrierOther').value = other ? other.slice(OTHER_PREFIX.length) : '';
+  $('#barrierOther').classList.toggle('hidden', !other);
+  $('#barrierDetails').value = d.barrierDetails || '';
+  $('#notes').value = d.notes || '';
+  refreshTotals();
+}
+
+/* ---------- التحقق ---------- */
+function validate(){
+  $$('.invalid').forEach(x => x.classList.remove('invalid'));
+  $$('.err-msg').forEach(x => x.textContent = '');
+  $$('.unit').forEach(u => u.classList.remove('has-err'));
+  const bad = [];
+  const mark = el => { el.classList.add('invalid'); bad.push(el); };
+
+  if (!$('#facility').value) mark($('#facility'));
+  if (!$('#date').value) mark($('#date'));
+  if (!$('#reporter').value.trim()) mark($('#reporter'));
+  const ph = $('#phone').value.trim();
+  if (ph && !/^01[0-9]{9}$/.test(ph)) mark($('#phone'));
+  if ($('#dietitians').value === '') mark($('#dietitians'));
+
+  const units = $$('.unit');
+  if (!units.length) { $('#unitsErr').textContent = 'أضف قسم واحد على الأقل'; bad.push($('#addUnit')); }
+  const names = {};
+  units.forEach(div => {
+    const msgs = [];
+    const name = unitName(div);
+    if (!name) { mark($('.u-name', div).value === OTHER ? $('.u-other', div) : $('.u-name', div)); }
+    else if (names[name]) { mark($('.u-name', div)); msgs.push('القسم ده متكرر — كل قسم يتكتب مرة واحدة'); }
+    names[name] = true;
+    $$('.num', div).forEach(i => { if (i.value === '') mark(i); });
+    const c = calc(numVal($('.u-req', div)), numVal($('.u-act', div)), numVal($('.u-brk', div)));
+    if (c && c.bad) { mark($('.u-brk', div)); msgs.push('عدد المعطّل لازم يكون أقل من أو يساوي العدد الفعلي'); }
+    if (!$('input[type=radio]:checked', div)) { mark($('.yn', div)); msgs.push('حدد توافر الكريمات'); }
+    $('.u-err', div).textContent = msgs.join(' • ');
+    if (div.querySelector('.invalid')) div.classList.add('has-err');
+  });
+
+  const anyBarrier = $$('input[name=barrier]:checked').length || $('#barrierOtherChk').checked;
+  if (!anyBarrier) { $('#barriers').classList.add('invalid'); $('#barriersErr').textContent = 'اختار المعوقات، أو «لا توجد معوقات»'; bad.push($('#barriers')); }
+  else if ($('#barrierOtherChk').checked && !$('#barrierOther').value.trim()) mark($('#barrierOther'));
+
+  return bad[0] || null;
+}
+
+/* ---------- الإرسال ---------- */
+function onSubmit(e){
+  e.preventDefault();
+  const first = validate();
+  if (first) {
+    first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    toast('فيه خانات ناقصة أو غلط — معلّمة بالأحمر', true);
+    return;
+  }
+  const p = collect();
+  busy(true);
+  if (HAS_SERVER) {
+    apiPost({ action: 'submit', payload: p })
+      .then(r => { busy(false); showDone(p, r); })
+      .catch(err => { busy(false); toast('ما اتبعتش — ' + (err && err.message ? err.message : 'اتأكد من النت وجرّب تاني') + ' (البيانات لسه محفوظة على الجهاز)', true); });
+  } else {
+    setTimeout(() => { busy(false); showDone(p, { id: 'معاينة', replaced: false }); }, 500);
+  }
+}
+
+function busy(on){ const b = $('#submitBtn'); b.disabled = on; b.textContent = on ? 'جاري الإرسال…' : 'إرسال البيانات'; }
+
+function showDone(p, r){
+  clearDraft();
+  $('#form').classList.add('hidden'); $('#bar').classList.add('hidden');
+  $('#doneTitle').textContent = 'تم إرسال بيانات ' + p.facility;
+  $('#doneSub').textContent = (r && r.replaced ? 'تم تحديث الإدخال السابق للمستشفى. ' : '') +
+    'رقم الإرسال: ' + (r && r.id ? r.id : '—') + ' — عدد الأقسام: ' + p.units.length;
+  let T = { req: 0, act: 0, brk: 0, use: 0, rep: 0, add: 0, tot: 0 };
+  const rows = p.units.map(u => {
+    const c = calc(u.required, u.actual, u.broken);
+    T.req += u.required; T.act += u.actual; T.brk += u.broken; T.use += c.usable; T.rep += c.replace; T.add += c.add; T.tot += c.total;
+    return `<tr><td>${esc(u.name)}</td><td>${u.required}</td><td>${u.actual}</td><td>${u.broken}</td><td>${c.usable}</td><td>${c.replace}</td><td>${c.add}</td><td><b>${c.total}</b></td><td>${esc(u.creams)}</td></tr>`;
+  }).join('');
+  $('#doneTable').innerHTML =
+    '<thead><tr><th>القسم</th><th>المفروض</th><th>الفعلي</th><th>المعطّل</th><th>الصالح</th><th>استبدال</th><th>إضافي</th><th>الإجمالي</th><th>كريمات</th></tr></thead>' +
+    '<tbody>' + rows + '</tbody>' +
+    `<tfoot><tr><td>الإجمالي</td><td>${T.req}</td><td>${T.act}</td><td>${T.brk}</td><td>${T.use}</td><td>${T.rep}</td><td>${T.add}</td><td>${T.tot}</td><td></td></tr></tfoot>`;
+  $('#done').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+function resetAll(){
+  const reporter = $('#reporter').value, phone = $('#phone').value;
+  $('#form').reset();
+  $('#reporter').value = reporter; $('#phone').value = phone;
+  $('#units').innerHTML = ''; seq = 0;
+  $('#barrierOther').classList.add('hidden');
+  setToday(); addUnit();
+  $('#existing').classList.add('hidden'); existingData = null;
+  $('#done').classList.add('hidden'); $('#form').classList.remove('hidden'); $('#bar').classList.remove('hidden');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+/* ---------- إدخال سابق لنفس المستشفى ---------- */
+function checkExisting(){
+  const f = $('#facility').value;
+  existingData = null;
+  $('#existing').classList.add('hidden');
+  if (!f || !HAS_SERVER) return;
+  apiGet({ action: 'existing', facility: f }).then(ex => {
+    if (!ex || $('#facility').value !== f) return;
+    existingData = ex;
+    $('#existingText').textContent = `المستشفى دي اتسجّل لها حصر يوم ${ex.date} (${ex.units.length} قسم) بواسطة ${ex.reporter}. أي إرسال جديد هيحل محل القديم.`;
+    $('#existing').classList.remove('hidden');
+  }).catch(() => {});
+}
+
+/* ---------- حفظ مؤقت على الجهاز ---------- */
+function queueDraft(){ clearTimeout(saveTimer); saveTimer = setTimeout(() => { try { localStorage.setItem(DRAFT_KEY, JSON.stringify(collect())); } catch (e) {} }, 600); }
+function readDraft(){ try { return JSON.parse(localStorage.getItem(DRAFT_KEY) || 'null'); } catch (e) { return null; } }
+function clearDraft(){ try { localStorage.removeItem(DRAFT_KEY); } catch (e) {} }
+
+let toastTimer;
+function toast(msg, isErr){
+  const t = $('#toast'); t.textContent = msg; t.className = 'show' + (isErr ? ' err' : '');
+  clearTimeout(toastTimer); toastTimer = setTimeout(() => t.className = '', 3200);
+}
+
+$('#retry').addEventListener('click', () => { $('#retry').classList.add('hidden'); $('#loaderText').textContent = 'جاري التحميل…'; boot(); });
+boot();
+</script>
+</body>
+</html>
